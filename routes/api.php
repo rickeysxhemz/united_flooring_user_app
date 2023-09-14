@@ -20,13 +20,23 @@ use App\Http\Controllers\AuthController;
 // });
 Route::prefix('auth')->group(function () {
 
+    //    Social Lite Routes
+    Route::get('login/{provider}', [AuthController::class, 'redirectToProvider']);
+    Route::get('login/{provider}/callback', [AuthController::class, 'handleProviderCallback']);
+
     //Public Routes
-    Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
-    // Route::group(['middleware' => ['auth:api', 'role:admin']], function () {
-    //     Route::get('logout', [AuthController::class, 'logout']);
-    // });
+    Route::post('verify-phone', [AuthController::class, 'verifyPhone']);
+    Route::post('login', [AuthController::class, 'login']);
+    Route::get('resend/{id}', [AuthController::class, 'resendOtpCode']);
+    Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('verify-code', [AuthController::class, 'verifyCode']);
+    Route::post('reset-password', [AuthController::class, 'resetPassword']); 
+    Route::group(['middleware' => ['auth:api', 'role:user']], function () {
+        Route::get('logout', [AuthController::class, 'logout']);
+    });
 });
+
 Route::any(
     '{any}',
     function () {
