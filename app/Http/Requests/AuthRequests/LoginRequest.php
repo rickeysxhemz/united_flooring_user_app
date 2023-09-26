@@ -24,8 +24,8 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email'=>'bail|required|email|max:255',
-            'password' => 'bail|required|string|max:255|min:8',
+            // 'email'=>'bail|required|email|max:255',
+            'token' => 'bail|required|string|max:255|min:8',
         ];
     }
 }
