@@ -21,13 +21,6 @@ class SettingController extends Controller
             return ($this->global_api_response->error(GlobalApiResponseCodeBook::INTERNAL_SERVER_ERROR, "Profile did not edited!", $edit_profile));
         return ($this->global_api_response->success(1, "Profile edited successfully!", $edit_profile));
     }
-    public function changePassword(Request $request)
-    {
-        $change_password = $this->setting_service->changePassword($request);
-        if (!$change_password)
-            return ($this->global_api_response->error(GlobalApiResponseCodeBook::INVALID_FORM_INPUTS, "Password did not match with old password!", $change_password));
-        return ($this->global_api_response->success(1, "Password changed successfully!", $change_password));
-    }
     public function profileImage(Request $request)
     {
         $profile_image = $this->setting_service->profileImage($request);

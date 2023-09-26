@@ -33,26 +33,6 @@ class SettingService extends BaseService{
             return false;
         }
     }
-    public function changePassword($request){
-        try{
-            if(!Hash::check($request->old_password,auth()->user()->password))
-            {
-                return false;
-            }
-            $user=auth()->user();
-            if(isset($request->new_password))
-            {
-            $user->password=Hash::make($request->new_password);
-            }
-            $user->save();
-            return true;
-        }catch(Exception $e){
-            DB::rollback();
-            $error = "Error: Message: " . $e->getMessage() . " File: " . $e->getFile() . " Line #: " . $e->getLine();
-            Helper::errorLogs("SettingService: changePassword", $error);
-            return false;
-        }
-    }
     public function profileImage($request){
         try{
             $user=auth()->user();

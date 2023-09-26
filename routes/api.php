@@ -52,8 +52,7 @@ Route::group(['middleware' => ['auth:api', 'role:user', 'check-user-status']], f
         Route::post('get-messages',[MessageController::class,'getMessages']);
     });
     Route::prefix('setting')->group(function () {
-        Route::post('edit-profile', [SettingController::class, 'editProfile']);
-        Route::post('change-password', [SettingController::class, 'changePassword']);
+        Route::post('edit-profile', [SettingController::class, 'editProfile']);;
         Route::post('profile-image', [SettingController::class, 'profileImage']);
     });
     });       
