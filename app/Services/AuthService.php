@@ -26,18 +26,21 @@ class AuthService extends BaseService
     {
         try {
          
-            $credentials = $request->only('email', 'password');
-
+            $credentials = $request->only('token');
             $user = User::whereHas('roles', function ($q) {
                 $q->where('name', 'user');
             })
-                ->where('email', '=', $credentials['email'])
+                ->where('remember_token', '=', $credentials['token'])
                 ->first();
+
+            $login=[];
+            $login['email']=$user->email;
+            $login['password']=$user->remember_token;
             // if(isset($user->phone_verified_at) && $user->phone_verified_at !== null){
                 if (
-                    Hash::check($credentials['password'], isset($user->password) ? $user->password : null)
+                    Hash::check($credentials['token'], isset($user->password) ? $user->password : null)
                     &&
-                    $token = $this->guard()->attempt($credentials)
+                    $token = $this->guard()->attempt($login)
                 ) {
     
                     $roles = Auth::user()->roles->pluck('name');
