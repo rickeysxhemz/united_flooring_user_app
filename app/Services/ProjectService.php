@@ -10,9 +10,11 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Comment;
+use App\Http\Traits\CommonTrait;
 
 class ProjectService extends BaseService
 {
+    use CommonTrait;
         public function info($request)
         {
             try{
@@ -43,6 +45,17 @@ class ProjectService extends BaseService
                         $comment->comment = $request->comment;
                         $comment->save();
                         DB::commit();
+        
+                        $title='new comment';
+                        $body=auth()->user()->name.' send a comment';
+                        $data=[
+                            'status'=>'comment',
+                            'sender'=>auth()->user()->id,
+                            'receiver'=>$request->receiver_id,
+                            'project_id'=>$request->project_id,
+                            'comment'=>$request->comment
+                        ];
+                        $this->pusher($request->receiver_id,$title,$body,$data);
                         return $comment;
             }catch(Exception $e){
                 DB::rollback();
