@@ -49,7 +49,8 @@ Route::group(['middleware' => ['auth:api', 'role:user', 'check-user-status']], f
     Route::prefix('message')->group(function () {
         Route::post('send', [MessageController::class, 'sendMessage']);
         Route::get('get-chats',[MessageController::class,'getChats']);
-        Route::post('get-messages',[MessageController::class,'getMessages']);
+        Route::get('get-messages',[MessageController::class,'getMessages']);
+        Route::get('read',[MessageController::class,'read']);
     });
     Route::prefix('setting')->group(function () {
         Route::post('edit-profile', [SettingController::class, 'editProfile']);;

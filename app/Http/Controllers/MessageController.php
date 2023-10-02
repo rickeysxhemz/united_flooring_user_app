@@ -30,11 +30,18 @@ class MessageController extends Controller
             return ($this->global_api_response->error(GlobalApiResponseCodeBook::INTERNAL_SERVER_ERROR, "Chats did not fetched!", $get_chats));
         return ($this->global_api_response->success(1, "Chats fetched successfully!", $get_chats));
     }
-    public function getMessages(Request $request)
+    public function getMessages()
     {
-        $get_messages = $this->message_service->getMessages($request);
+        $get_messages = $this->message_service->getMessages();
         if (!$get_messages)
             return ($this->global_api_response->error(GlobalApiResponseCodeBook::INTERNAL_SERVER_ERROR, "Messages did not fetched!", $get_messages));
         return ($this->global_api_response->success(1, "Messages fetched successfully!", $get_messages));
+    }
+    public function read()
+    {
+        $read = $this->message_service->read();
+        if (!$read)
+            return ($this->global_api_response->error(GlobalApiResponseCodeBook::INTERNAL_SERVER_ERROR, "Messages did not read!", $read));
+        return ($this->global_api_response->success(1, "Messages read successfully!", $read));
     }
 }
