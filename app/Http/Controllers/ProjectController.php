@@ -37,4 +37,12 @@ class ProjectController extends Controller
             return ($this->global_api_response->error(GlobalApiResponseCodeBook::INTERNAL_SERVER_ERROR, "Comments did not fetched!", $get_comments));
         return ($this->global_api_response->success(1, "Comments fetched successfully!", $get_comments));
     }
+    public function uploadImages(Request $request)
+    {
+        $upload_images = $this->project_service->uploadImages($request);
+        if (!$upload_images)
+            return ($this->global_api_response->error(GlobalApiResponseCodeBook::INTERNAL_SERVER_ERROR, "Images did not uploaded!", $upload_images));
+        return ($this->global_api_response->success(1, "Images uploaded successfully!", $upload_images));
+    }
+
 }

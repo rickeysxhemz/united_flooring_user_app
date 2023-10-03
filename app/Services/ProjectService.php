@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Comment;
 use App\Http\Traits\CommonTrait;
-
+use App\Models\ProjectImage;
 class ProjectService extends BaseService
 {
     use CommonTrait;
@@ -76,6 +76,23 @@ class ProjectService extends BaseService
                 DB::rollback();
                 $error = "Error: Message: " . $e->getMessage() . " File: " . $e->getFile() . " Line #: " . $e->getLine();
                 Helper::errorLogs("ProjectService: getComments", $error);
+                return false;
+            }
+        }
+        public function uploadImages($request)
+        {
+            try{
+                DB::beginTransaction();
+                $project_images=new ProjectImage;
+                $project_images->project_id=$request->project_id;
+                $project_images->image=Helper::storeImageUrl($request,null,'storage/projectImages');
+                $project_images->save();
+                DB::commit();
+                return $project_images;
+            }catch(Exception $e){
+                DB::rollback();
+                $error = "Error: Message: " . $e->getMessage() . " File: " . $e->getFile() . " Line #: " . $e->getLine();
+                Helper::errorLogs("ProjectService: uploadImages", $error);
                 return false;
             }
         }
