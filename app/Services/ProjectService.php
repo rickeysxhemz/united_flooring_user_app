@@ -40,7 +40,7 @@ class ProjectService extends BaseService
                         DB::beginTransaction();
                         $comment = new Comment();
                         $comment->sender_id = auth()->user()->id;
-                        $comment->receiver_id = $request->receiver_id;
+                        // $comment->receiver_id = $request->receiver_id;
                         $comment->project_id = $request->project_id;
                         $comment->comment = $request->comment;
                         $comment->save();
@@ -51,11 +51,10 @@ class ProjectService extends BaseService
                         $data=[
                             'status'=>'comment',
                             'sender'=>auth()->user()->id,
-                            'receiver'=>$request->receiver_id,
                             'project_id'=>$request->project_id,
                             'comment'=>$request->comment
                         ];
-                        $this->pusher($request->receiver_id,$title,$body,$data);
+                        $this->pusher(auth()->user()->id,$title,$body,$data);
                         return $comment;
             }catch(Exception $e){
                 DB::rollback();
@@ -67,7 +66,7 @@ class ProjectService extends BaseService
         public function getComments($request)
         {
             try{
-                $comments=Comment::with('sender','receiver')
+                $comments=Comment::with('sender')
                 ->where('project_id',$request->project_id)
                             ->orderBy('created_at','desc')
                             ->get();
@@ -79,21 +78,5 @@ class ProjectService extends BaseService
                 return false;
             }
         }
-        public function uploadImages($request)
-        {
-            try{
-                DB::beginTransaction();
-                $project_images=new ProjectImage;
-                $project_images->project_id=$request->project_id;
-                $project_images->image=Helper::storeImageUrl($request,null,'storage/projectImages');
-                $project_images->save();
-                DB::commit();
-                return $project_images;
-            }catch(Exception $e){
-                DB::rollback();
-                $error = "Error: Message: " . $e->getMessage() . " File: " . $e->getFile() . " Line #: " . $e->getLine();
-                Helper::errorLogs("ProjectService: uploadImages", $error);
-                return false;
-            }
-        }
+       
 }

@@ -248,6 +248,10 @@ trait CommonTrait {
             $app_key        = 'ff1996e2e5ad3c299e52';
             $app_secret     = 'fed2303c83fb50473c1c';
             $app_cluster    = 'ap2';
+            
+            if (!is_array($trigger_user)) {
+                $trigger_user = [$trigger_user];
+            }
 
             $pusher = new Pusher\Pusher( $app_key, $app_secret, $app_id, array( 'cluster' => $app_cluster, 'useTLS' => true ) );
 
