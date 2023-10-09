@@ -8,6 +8,7 @@ use App\Models\Project;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 
 
@@ -44,6 +45,22 @@ class DashboardService extends BaseService
             DB::rollback();
             $error = "Error: Message: " . $e->getMessage() . " File: " . $e->getFile() . " Line #: " . $e->getLine();
             Helper::errorLogs("ProjectService: getProjects", $error);
+            return false;
+        }
+    }
+    public function userDeviceToken($request)
+    {
+        try{
+            DB::beginTransaction();
+            $user=auth()->user();
+            $user->device_token=$request->device_token;
+            $user->save();
+            DB::commit();
+            return $user;
+        }catch(Exception $e){
+            DB::rollback();
+            $error = "Error: Message: " . $e->getMessage() . " File: " . $e->getFile() . " Line #: " . $e->getLine();
+            Helper::errorLogs("DashboardService: userDeviceToken", $error);
             return false;
         }
     }

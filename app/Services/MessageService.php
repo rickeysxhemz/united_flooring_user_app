@@ -37,6 +37,7 @@ class MessageService extends BaseService
                 $user = User::find(Auth::id());
                 $title = 'new message';
                 $body = $user->name.' send a message';
+                $user='user';
                 $data = [
                     'status' => 'chat', 
                     'sender' =>  Auth::id(), 
@@ -44,6 +45,7 @@ class MessageService extends BaseService
                     'message' => $request->message
                 ];
                 $this->pusher($request->receiver_id, $title, $body, $data);
+                $this->notifications($request->receiver_id, $user, $title, $body, $data);
             DB::commit();
             return $message;
             } else
@@ -62,7 +64,7 @@ class MessageService extends BaseService
             $user = User::find(Auth::id());
                 $title = 'new message';
                 $body = $user->name.' send a message';
-
+                $user='user';
                 $data = [
                         'status' => 'chat', 
                         'sender' =>  Auth::id(), 
@@ -71,6 +73,7 @@ class MessageService extends BaseService
                     ];
 
                 $this->pusher($request->receiver_id, $title, $body, $data);
+                $this->notifications($request->receiver_id,$user, $title, $body, $data);
             DB::commit();
             return $message;
         }

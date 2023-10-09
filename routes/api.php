@@ -40,6 +40,7 @@ Route::group(['middleware' => ['auth:api', 'role:user', 'check-user-status']], f
     Route::prefix('dashboard')->group(function () {
         Route::get('user-data',[DashboardController::class,'getUserData']);
         Route::get('recent-projects',[DashboardController::class,'recentProjects']);
+        Route::post('user-device-token',[DashboardController::class,'userDeviceToken']);
         });
     Route::prefix('project')->group(function () {
         Route::post('info',[ProjectController::class,'info']);
