@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Exception;
 use Pusher;
 use App\Helper\Helper;
+use App\Models\User;
 trait CommonTrait {
 
     function all($fields = '*', $from_table = '', $where = [], $order_by = '', $dir = 'asc', $limit = '') {
@@ -264,5 +265,66 @@ trait CommonTrait {
         }
         
     }
+    function notifications($id,$user, $title = '', $body = '', $data = []) 
+    {   
+        
+        try {
+            $url = 'https://fcm.googleapis.com/fcm/send';
+            
+            if($user == 'user'){
+                $FcmToken = User::where('id', $id)->pluck('device_token')->all();
+                $serverKey = 'AAAAXE18w68:APA91bHktIgr00yxKIKGITzgFt0ScHVF5ZfICyXeisfqej-F52wfFbcDAhT_Ie5Ff-jIiuwi-7quduln_VqFBJkosMp1ygM3Hhm8T_ld8S7NrbOQ-9u7S2QJ_dZcwa1xh96AmRKjFKpH';
+                
+            } else {
+                $FcmToken = User::where('id', $id)->pluck('device_token')->all();
+                $serverKey = 'AAAA6Vu72G4:APA91bEFdMWka9hBxaqQnyikMmV2FnlCvsQTIs0rAAi8bTazMiAr_bD6x_UwDTb8wNNjUjWrWZjK7ZpsMmYf6OFp2_YgBXR1yQATWpewNjo2ctIZpptjmggDmZjGNOHCbcAjgNZ6nFZC';
+            }
+            $data = [
+                "registration_ids" => $FcmToken,
+                "data" => [
+                    "data" => $data,
+                ],
+                "notification" => [
+                    "title" => $title,
+                    "body" => $body
+                ]
+            ];
+            $encodedData = json_encode($data);
+        
+            $headers = [
+                'Authorization:key=' . $serverKey,
+                'Content-Type: application/json',
+            ];
+        
+            $ch = curl_init();
+        
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+            // Disabling SSL Certificate support temporarly
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);        
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $encodedData);
+
+            // Execute post
+            $result = curl_exec($ch);
+
+            if ($result === FALSE) {
+                die('Curl failed: ' . curl_error($ch));
+            }        
+
+            // Close connection
+            curl_close($ch);
+            
+        }catch (Exception $e) {
+            $error = "Error: Message: " . $e->getMessage() . " File: " . $e->getFile() . " Line #: " . $e->getLine();
+            Helper::errorLogs("CommonTrait: Notification", $error);
+            return Helper::returnRecord(false, []);
+        }
+        
+    }
+
 
 }

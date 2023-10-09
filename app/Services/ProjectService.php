@@ -48,9 +48,11 @@ class ProjectService extends BaseService
                         $comment->comment = $request->comment;
                         $comment->save();
                         DB::commit();
-        
+
+                        $user_id=Project::where('id',$comment->project_id)->first()->admin_id;
                         $title='new comment';
                         $body=auth()->user()->name.' send a comment';
+                        $user='user';
                         $data=[
                             'status'=>'comment',
                             'sender'=>auth()->user()->id,
@@ -58,6 +60,7 @@ class ProjectService extends BaseService
                             'comment'=>$request->comment
                         ];
                         $this->pusher(auth()->user()->id,$title,$body,$data);
+                        $this->notifications($user_id, $user, $title, $body, $data);
                         return $comment;
             }catch(Exception $e){
                 DB::rollback();
