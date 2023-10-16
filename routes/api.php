@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth:api', 'role:user', 'check-user-status']], f
         Route::post('comment',[ProjectController::class,'comment']);
         Route::post('get-comments',[ProjectController::class,'getComments']);
         Route::post('upload-images', [ProjectController::class, 'uploadImages']);
+        Route::post('read-comment',[ProjectController::class,'readComment']);
     });
     Route::prefix('message')->group(function () {
         Route::post('send', [MessageController::class, 'sendMessage']);
