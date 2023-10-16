@@ -44,5 +44,12 @@ class ProjectController extends Controller
             return ($this->global_api_response->error(GlobalApiResponseCodeBook::INTERNAL_SERVER_ERROR, "Images did not uploaded!", $upload_images));
         return ($this->global_api_response->success(1, "Images uploaded successfully!", $upload_images));
     }
+    public function readComment(Request $request)
+    {
+        $read_comment = $this->project_service->readComment($request);
+        if (!$read_comment)
+            return ($this->global_api_response->error(GlobalApiResponseCodeBook::INTERNAL_SERVER_ERROR, "Comment did not read!", $read_comment));
+        return ($this->global_api_response->success(1, "Comment read successfully!", $read_comment));
+    }
 
 }
