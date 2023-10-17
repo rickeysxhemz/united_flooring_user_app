@@ -36,7 +36,7 @@ class DashboardService extends BaseService
     {
         try{
             $recent_projects=Project::where('user_id', auth()->user()->id)
-                            ->with('ProjectCategories','user')
+                            ->with(['ProjectCommentsCount','ProjectCategories','user'])
                             ->where('status','in_progress')
                             ->latest('created_at')
                             ->get();
